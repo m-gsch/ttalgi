@@ -1,0 +1,17 @@
+[package]
+name = "ttalgi"
+version = "0.1.0"
+authors = ["mguasch"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+unicorn = "0.9.1"
+ansi_term = "0.12.1"
+
+[dependencies.keystone]
+git = "https://github.com/keystone-engine/keystone"
+rev = "c4de98f71f05f356817f5e91fee0d509c7b0b440"  # latest master as of 2019/10/16
+default-features = false
+features = ["use_system_keystone"]
