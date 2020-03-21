@@ -1,6 +1,7 @@
 use ansi_term::Colour::{Blue, Green, Red, Yellow};
 use ansi_term::Style;
 use keystone::{Arch, AsmResult, Keystone};
+use std::error::Error;
 use std::io::{self, Write};
 use std::iter;
 use std::process;
@@ -82,48 +83,48 @@ impl Ttalgi {
             TtalgiArch::X86 => {
                 let eax = Register {
                     uc_reg: unicorn::RegisterX86::EAX,
-                    text: "EAX".to_string(),
+                    text: String::from("EAX"),
                     content: 0,
                     changed: false,
                 };
                 let ebx = Register {
                     uc_reg: unicorn::RegisterX86::EBX,
-                    text: "EBX".to_string(),
+                    text: String::from("EBX"),
                     ..eax
                 };
                 let ecx = Register {
                     uc_reg: unicorn::RegisterX86::ECX,
-                    text: "ECX".to_string(),
+                    text: String::from("ECX"),
                     ..eax
                 };
                 let edx = Register {
                     uc_reg: unicorn::RegisterX86::EDX,
-                    text: "EDX".to_string(),
+                    text: String::from("EDX"),
                     ..eax
                 };
                 let edi = Register {
                     uc_reg: unicorn::RegisterX86::EDI,
-                    text: "EDI".to_string(),
+                    text: String::from("EDI"),
                     ..eax
                 };
                 let esi = Register {
                     uc_reg: unicorn::RegisterX86::ESI,
-                    text: "ESI".to_string(),
+                    text: String::from("ESI"),
                     ..eax
                 };
                 let ebp = Register {
                     uc_reg: unicorn::RegisterX86::EBP,
-                    text: "EBP".to_string(),
+                    text: String::from("EBP"),
                     ..eax
                 };
                 let esp = Register {
                     uc_reg: unicorn::RegisterX86::ESP,
-                    text: "ESP".to_string(),
+                    text: String::from("ESP"),
                     ..eax
                 };
                 let eip = Register {
                     uc_reg: unicorn::RegisterX86::EIP,
-                    text: "EIP".to_string(),
+                    text: String::from("EIP"),
                     ..eax
                 };
                 regs.push(eax);
