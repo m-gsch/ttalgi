@@ -22,12 +22,12 @@ $ cargo build
 
 ## 📝To Do
 
-- Comment code
-- Add more architectures
-- Implement Unicorn and Keystone functions as part of Ttalgi
-- Fix update_disasm so it doesn't need params
-- Add addresses to print_disasm
-- Implement return Result in main and get rid of all those unwraps
+- Comment code.
+- Add more architectures.
+- Implement Unicorn and Keystone functions as part of Ttalgi.
+- Fix update_disasm so it doesn't need params.
+- Add addresses to print_disasm.
+- Error handling can be improved.
 
 ## 🖼️Example Images
 
