@@ -1,6 +1,6 @@
+use console::style;
 use keystone;
 use std::cell::RefCell;
-
 use std::fmt;
 use std::ops::Deref;
 use std::rc::Rc;
@@ -122,17 +122,17 @@ impl TtalgiContext<'_, ()> {
     }
 
     pub fn print_registers(&self) {
-        println!("[REGISTERS]");
+        println!("{}", style("[REGISTERS]").cyan());
         for reg in self.regs.clone().into_iter() {
             match self.arch {
                 ArchEnum::X86 => println!(
-                    "{}: {:#010x}",
-                    reg,
+                    "{}:\t{:#010x}",
+                    style(&reg).bold(),
                     self.emulator.borrow().reg_read(reg.0).unwrap()
                 ),
                 ArchEnum::X64 => println!(
-                    "{}: {:#018x}",
-                    reg,
+                    "{}:\t{:#018x}",
+                    style(&reg).bold(),
                     self.emulator.borrow().reg_read(reg.0).unwrap()
                 ),
             };
@@ -159,20 +159,24 @@ impl TtalgiContext<'_, ()> {
         let mut stack_mem = vec![0; offset];
         emu.mem_read(stack_pointer, &mut stack_mem).unwrap();
 
-        println!("[STACK]");
+        println!("{}", style("[STACK]").cyan());
         for stack_bytes in stack_mem.chunks(pointer_size) {
             match self.arch {
-                ArchEnum::X86 => println!(
-                    "{:#010x}\t{:#10x}",
-                    stack_pointer,
-                    u32::from_le_bytes(stack_bytes.try_into().unwrap())
-                ),
-                ArchEnum::X64 => println!(
-                    "{:#018x}\t{:#18x}",
-                    stack_pointer,
-                    u64::from_le_bytes(stack_bytes.try_into().unwrap())
-                ),
-            };
+                ArchEnum::X86 => {
+                    print!("{:#010x}", style(stack_pointer).yellow());
+                    println!(
+                        "\t{:#10x}",
+                        u32::from_le_bytes(stack_bytes.try_into().unwrap())
+                    );
+                }
+                ArchEnum::X64 => {
+                    print!("{:#018x}", style(stack_pointer).yellow());
+                    println!(
+                        "\t{:#18x}",
+                        u64::from_le_bytes(stack_bytes.try_into().unwrap())
+                    );
+                }
+            }
             stack_pointer += pointer_size as u64;
         }
         println!("");

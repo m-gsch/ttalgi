@@ -1,15 +1,15 @@
 # 🍓Ttalgi
-Ttalgi is a very basic assembly REPL written in Rust using [Unicorn](https://www.unicorn-engine.org/) and [Keystone](http://www.keystone-engine.org/).
+Ttalgi is a very basic assembly REPL written in Rust using [Unicorn](https://www.unicorn-engine.org/) and [Keystone](https://www.keystone-engine.org/).
 
-Right now it only emulates the x86 32-bit architecture and needs a lot of work.
+Right now it only emulates the x86 32-bit & 64-bit architecture and needs a lot of work.
 
 ## 💾Installation
 
 ### Requirements
 
-- Rust 1.38 and up
+- [Rust](https://www.rust-lang.org/tools/install)
 - [Unicorn](https://www.unicorn-engine.org/)
-- [Keystone](http://www.keystone-engine.org/)
+- [Keystone](https://www.keystone-engine.org/)
 
 
 ## ⚙️Building
@@ -20,17 +20,10 @@ $ cd ttalgi
 $ cargo build
 ```
 
-## 📝To Do
+## 🖼️Demo
+### Current version
 
-- Comment code.
-- Add more architectures.
-- Implement Unicorn and Keystone functions as part of Ttalgi.
-- Fix update_disasm so it doesn't need params.
-- Add addresses to print_disasm.
-- Error handling can be improved.
-
-## 🖼️Example Images
-
+### Old version
 ![](images/example.png)
 
 ## 🎓License

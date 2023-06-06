@@ -8,6 +8,7 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "4.3.2", features = ["derive"] }
+console = "0.15.7"
 unicorn-engine = "2.0.1"
 
 

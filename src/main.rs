@@ -1,6 +1,7 @@
 use clap::Parser;
 use std::io::{self, Write};
 
+use console::style;
 use ttalgi::{ArchEnum, TtalgiContext};
 
 //[TODO] Comment code
@@ -35,7 +36,7 @@ fn main() {
     ttalgi.init_memory(cli.memory_size, cli.stack_start, cli.instruction_start);
 
     loop {
-        print!("{} ", ttalgi.prompt);
+        print!("{} ", style(ttalgi.prompt).green().bold());
         io::stdout().flush().unwrap();
 
         let mut input = String::new();
