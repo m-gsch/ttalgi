@@ -1,6 +1,7 @@
 use keystone;
 use std::cell::RefCell;
 
+use std::fmt;
 use std::ops::Deref;
 use std::rc::Rc;
 use unicorn_engine::unicorn_const::{Arch, Mode, Permission};
@@ -12,12 +13,21 @@ pub enum ArchEnum {
     X64,
 }
 
+#[derive(Debug, Clone)]
+struct Register(RegisterX86);
+
+impl fmt::Display for Register {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self.0)
+    }
+}
+
 pub struct TtalgiContext<'a, D> {
     pub arch: ArchEnum,
     pub prompt: &'a str,
     assembler: Rc<keystone::Keystone>,
     emulator: Rc<RefCell<Unicorn<'a, D>>>,
-    regs: Vec<(&'a str, i32)>,
+    regs: Vec<Register>,
     pub memory_size: u64,
     pub stack_start: u64,
     pub instruction_start: u64,
@@ -36,16 +46,16 @@ impl TtalgiContext<'_, ()> {
                     unicorn_engine::Unicorn::new(Arch::X86, Mode::MODE_32).unwrap(),
                 )),
                 regs: vec![
-                    ("EAX", 19),
-                    ("EBX", 21),
-                    ("ECX", 22),
-                    ("EDX", 24),
-                    ("EDI", 23),
-                    ("ESI", 29),
-                    ("EBP", 20),
-                    ("ESP", 30),
-                    ("EIP", 26),
-                    ("EFLAGS", 25),
+                    Register(RegisterX86::EAX),
+                    Register(RegisterX86::EBX),
+                    Register(RegisterX86::ECX),
+                    Register(RegisterX86::EDX),
+                    Register(RegisterX86::EDI),
+                    Register(RegisterX86::ESI),
+                    Register(RegisterX86::EBP),
+                    Register(RegisterX86::ESP),
+                    Register(RegisterX86::EIP),
+                    Register(RegisterX86::EFLAGS),
                 ],
                 memory_size: 0,
                 stack_start: 0,
@@ -61,16 +71,16 @@ impl TtalgiContext<'_, ()> {
                     unicorn_engine::Unicorn::new(Arch::X86, Mode::MODE_64).unwrap(),
                 )),
                 regs: vec![
-                    ("RAX", 35),
-                    ("RBX", 37),
-                    ("RCX", 38),
-                    ("RDX", 40),
-                    ("RDI", 39),
-                    ("RSI", 43),
-                    ("RBP", 36),
-                    ("RSP", 44),
-                    ("RIP", 41),
-                    ("RFLAGS", 253),
+                    Register(RegisterX86::RAX),
+                    Register(RegisterX86::RBX),
+                    Register(RegisterX86::RCX),
+                    Register(RegisterX86::RDX),
+                    Register(RegisterX86::RDI),
+                    Register(RegisterX86::RSI),
+                    Register(RegisterX86::RBP),
+                    Register(RegisterX86::RSP),
+                    Register(RegisterX86::RIP),
+                    Register(RegisterX86::RFLAGS),
                 ],
                 memory_size: 0,
                 stack_start: 0,
@@ -78,6 +88,7 @@ impl TtalgiContext<'_, ()> {
             }),
         }
     }
+
     pub fn init_memory(&mut self, memory_size: u64, stack_start: u64, instruction_start: u64) {
         self.memory_size = memory_size;
         self.stack_start = stack_start;
@@ -112,51 +123,58 @@ impl TtalgiContext<'_, ()> {
 
     pub fn print_registers(&self) {
         println!("[REGISTERS]");
-        for (mnemonic, reg_enum) in self.regs.clone().into_iter() {
-            // [TODO] Probably change this to look more rustacean .map() or something like that
+        for reg in self.regs.clone().into_iter() {
             match self.arch {
                 ArchEnum::X86 => println!(
                     "{}: {:#010x}",
-                    mnemonic,
-                    self.emulator.borrow().reg_read(reg_enum).unwrap()
+                    reg,
+                    self.emulator.borrow().reg_read(reg.0).unwrap()
                 ),
                 ArchEnum::X64 => println!(
                     "{}: {:#018x}",
-                    mnemonic,
-                    self.emulator.borrow().reg_read(reg_enum).unwrap()
+                    reg,
+                    self.emulator.borrow().reg_read(reg.0).unwrap()
                 ),
             };
         }
+        println!("");
     }
 
     pub fn print_stack(&self) {
         let emu = self.emulator.borrow();
 
-        let stack_pointer = emu.reg_read(RegisterX86::ESP).unwrap();
-        let offset = self.stack_start - stack_pointer;
-
-        let mut stack_mem = vec![0; 8];
-
-        println!("[STACK]");
+        let stack_pointer = match self.arch {
+            ArchEnum::X86 => RegisterX86::ESP,
+            ArchEnum::X64 => RegisterX86::RSP,
+        };
         let pointer_size = match self.arch {
             ArchEnum::X86 => 4,
             ArchEnum::X64 => 8,
         };
 
-        for n in (0..offset).step_by(pointer_size) {
-            emu.mem_read(stack_pointer + n, &mut stack_mem).unwrap();
+        let stack_pointer = emu.reg_read(stack_pointer).unwrap();
+        let mut stack_pointer = stack_pointer & !7;
+        let offset = (self.stack_start - stack_pointer) as usize;
+
+        let mut stack_mem = vec![0; offset];
+        emu.mem_read(stack_pointer, &mut stack_mem).unwrap();
+
+        println!("[STACK]");
+        for stack_bytes in stack_mem.chunks(pointer_size) {
             match self.arch {
                 ArchEnum::X86 => println!(
                     "{:#010x}\t{:#10x}",
-                    stack_pointer + n,
-                    u32::from_le_bytes(stack_mem[..pointer_size].try_into().unwrap())
+                    stack_pointer,
+                    u32::from_le_bytes(stack_bytes.try_into().unwrap())
                 ),
                 ArchEnum::X64 => println!(
                     "{:#018x}\t{:#18x}",
-                    stack_pointer + n,
-                    u64::from_le_bytes(stack_mem[..pointer_size].try_into().unwrap())
+                    stack_pointer,
+                    u64::from_le_bytes(stack_bytes.try_into().unwrap())
                 ),
             };
+            stack_pointer += pointer_size as u64;
         }
+        println!("");
     }
 }
