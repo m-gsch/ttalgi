@@ -147,13 +147,13 @@ impl TtalgiContext<'_, ()> {
             ArchEnum::X86 => RegisterX86::ESP,
             ArchEnum::X64 => RegisterX86::RSP,
         };
-        let pointer_size = match self.arch {
+        let pointer_size: usize = match self.arch {
             ArchEnum::X86 => 4,
             ArchEnum::X64 => 8,
         };
 
         let stack_pointer = emu.reg_read(stack_pointer).unwrap();
-        let mut stack_pointer = stack_pointer & !7;
+        let mut stack_pointer = stack_pointer & !(pointer_size - 1) as u64;
         let offset = (self.stack_start - stack_pointer) as usize;
 
         let mut stack_mem = vec![0; offset];
