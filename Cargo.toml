@@ -1,17 +1,16 @@
 [package]
 name = "ttalgi"
-version = "0.1.0"
-authors = ["mguasch"]
-edition = "2018"
+version = "0.2.0"
+authors = ["Martí Guasch <0x4c44@proton.me>"]
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-unicorn = "0.9.1"
-ansi_term = "0.12.1"
+clap = { version = "4.3.2", features = ["derive"] }
+unicorn-engine = "2.0.1"
+
 
 [dependencies.keystone]
 git = "https://github.com/keystone-engine/keystone"
-rev = "c4de98f71f05f356817f5e91fee0d509c7b0b440"  # latest master as of 2019/10/16
-default-features = false
-features = ["use_system_keystone"]
+rev = "2a611d9a8c18c08cdf0439ae428146476c4385a7"  # latest master as of 2023/06/05
