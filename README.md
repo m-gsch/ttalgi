@@ -22,7 +22,7 @@ $ cargo build
 
 ## 🖼️Demo
 ### Current version
-
+https://github.com/MartiGJ/ttalgi/assets/35295849/d7a641b6-d270-44fb-b2c0-b91cf5f955ef
 ### Old version
 ![](images/example.png)
 
