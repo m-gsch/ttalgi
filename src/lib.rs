@@ -1,5 +1,5 @@
 use console::style;
-use keystone;
+use keystone_engine;
 use std::cell::RefCell;
 use std::fmt;
 use std::ops::Deref;
@@ -25,7 +25,7 @@ impl fmt::Display for Register {
 pub struct TtalgiContext<'a, D> {
     pub arch: ArchEnum,
     pub prompt: &'a str,
-    assembler: Rc<keystone::Keystone>,
+    assembler: Rc<keystone_engine::Keystone>,
     emulator: Rc<RefCell<Unicorn<'a, D>>>,
     regs: Vec<Register>,
     pub memory_size: u64,
@@ -40,7 +40,11 @@ impl TtalgiContext<'_, ()> {
                 arch: architecture,
                 prompt: "x86>",
                 assembler: Rc::new(
-                    keystone::Keystone::new(keystone::Arch::X86, keystone::Mode::MODE_32).unwrap(),
+                    keystone_engine::Keystone::new(
+                        keystone_engine::Arch::X86,
+                        keystone_engine::Mode::MODE_32,
+                    )
+                    .unwrap(),
                 ),
                 emulator: Rc::new(RefCell::new(
                     unicorn_engine::Unicorn::new(Arch::X86, Mode::MODE_32).unwrap(),
@@ -65,7 +69,11 @@ impl TtalgiContext<'_, ()> {
                 arch: architecture,
                 prompt: "x64>",
                 assembler: Rc::new(
-                    keystone::Keystone::new(keystone::Arch::X86, keystone::Mode::MODE_64).unwrap(),
+                    keystone_engine::Keystone::new(
+                        keystone_engine::Arch::X86,
+                        keystone_engine::Mode::MODE_64,
+                    )
+                    .unwrap(),
                 ),
                 emulator: Rc::new(RefCell::new(
                     unicorn_engine::Unicorn::new(Arch::X86, Mode::MODE_64).unwrap(),

@@ -10,8 +10,4 @@ edition = "2021"
 clap = { version = "4.3.2", features = ["derive"] }
 console = "0.15.7"
 unicorn-engine = "2.0.1"
-
-
-[dependencies.keystone]
-git = "https://github.com/keystone-engine/keystone"
-rev = "2a611d9a8c18c08cdf0439ae428146476c4385a7"  # latest master as of 2023/06/05
+keystone-engine = "0.1.0"
